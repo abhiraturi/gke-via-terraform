@@ -35,7 +35,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.5.0  # Set up Google Cloud SDK
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Deploy to GKE
         run: |
