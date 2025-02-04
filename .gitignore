@@ -1,0 +1,12 @@
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.pem
+*.key
+*.pub
+*.json
+
+__pycache__/
+*.py[cod]
+*$py.class
