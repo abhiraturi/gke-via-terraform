@@ -22,7 +22,7 @@ jobs:
           version: latest
 
       - name: Log in to Google Container Registry
-        uses: google-github-actions/auth@v0.4.0  # Authenticate with GCP
+        uses: google-github-actions/auth@v0.8.0  # Authenticate with GCP
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}  # Add your GCP credentials to GitHub secrets
 
