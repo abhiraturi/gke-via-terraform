@@ -2,12 +2,10 @@ name: 🚀 Deploy to GKE
 
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main, dev]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -30,18 +28,18 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: 📤 Authenticate with Google Container Registry (GCR)
+      - name: 📤 Authenticate with GCR
         run: gcloud auth configure-docker gcr.io
 
       - name: 🔨 Build and Push Docker Image
         run: |
-          docker buildx build --platform linux/amd64 -t gcr.io/gcp-project-449820/flask-app:latest .
-          docker push gcr.io/gcp-project-449820/flask-app:latest
+          docker buildx build --platform linux/amd64 -t gcr.io/my-project-id/flask-app:latest .
+          docker push gcr.io/my-project-id/flask-app:latest
 
   deploy_staging:
     name: 🚀 Deploy to Staging
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
     if: github.ref == 'refs/heads/dev'
     steps:
       - name: ⬇️ Checkout repo
@@ -53,33 +51,7 @@ jobs:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🛠 Set up GKE kubeconfig
-        run: |
-          gcloud container clusters get-credentials my-cluster --region my-region --project gcp-project-449820
+        run: gcloud container clusters get-credentials my-cluster --region my-region --project my-project-id
 
-      - name: 🚀 Deploy to GKE Staging
-        run: |
-          kubectl set image deployment/flask-app flask-app=gcr.io/gcp-project-449820/flask-app:latest
-          kubectl rollout status deployment/flask-app
-
-  deploy_production:
-    name: 🚀 Deploy to Production
-    runs-on: ubuntu-latest
-    needs: [build]
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
-
-      - name: 🔑 Authenticate with Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-
-      - name: 🛠 Set up GKE kubeconfig
-        run: |
-          gcloud container clusters get-credentials my-cluster --region my-region --project gcp-project-449820
-
-      - name: 🚀 Deploy to GKE Production
-        run: |
-          kubectl set image deployment/flask-app flask-app=gcr.io/gcp-project-449820/flask-app:latest
-          kubectl rollout status deployment/flask-app
+      - name: 🚀 Deploy to GKE
+        run: kubectl set image deployment/flask-app flask-app=gcr.io/my-project-id/flask-app:latest
