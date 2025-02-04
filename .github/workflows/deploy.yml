@@ -21,10 +21,10 @@ jobs:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v3
 
-      - name: 🔑 Authenticate with Google Cloud
-        uses: octo-org/example-repo/.github/workflows/google-auth.yml@main
-        secrets:
-          gcp_credentials: ${{ secrets.GCP_CREDENTIALS }}
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{secrets.GCP_CREDENTIALS}}
 
       - name: 🛠 Set up GKE kubeconfig
         run: |
