@@ -6,7 +6,10 @@ crash.*.log
 *.key
 *.pub
 *.json
+.terraform/
+**/terraform-provider-*
 
 __pycache__/
 *.py[cod]
 *$py.class
+*.tar.gz
